@@ -1,2 +1,3 @@
-erlang-playground
-=================
+# erlang-playground
+
+Playing with Erlang.
