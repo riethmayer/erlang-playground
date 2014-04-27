@@ -5,7 +5,8 @@
          euklid/1, euklid/2,
          hamming/2,
          haversine/2, haversine/3,
-         jaccard/2 ]).
+         jaccard/2,
+         levenshtein/2 ]).
 -define(EARTH_RADIUS_IN_MILES, 3956).
 -define(EARTH_RADIUS_IN_KILOMETERS, 6372.8).
 
@@ -80,3 +81,23 @@ jaccard(A,B) when is_list(A) and is_list(B) ->
 jaccard(A,B) ->
     sets:size(sets:intersection(A,B)) / sets:size(sets:union(A,B)).
 
+%% levenshtein distance
+%% http://en.wikipedia.org/wiki/Levenshtein_distance
+levenshtein(Same, Same) -> 0;
+levenshtein(S,T) ->
+    levenshtein_recursive(S,length(S), T, length(T)).
+
+levenshtein_recursive(_, 0, _, Length) -> Length;
+levenshtein_recursive(_, Length, _, 0) -> Length;
+levenshtein_recursive(S, LengthS, T, LengthT) ->
+    Cost = levenshtein_cost(S, LengthS, T, LengthT),
+    lists:min([levenshtein_recursive(S, LengthS-1, T, LengthT  ) + 1,
+               levenshtein_recursive(S, LengthS,   T, LengthT-1) + 1,
+               levenshtein_recursive(S, LengthS-1, T, LengthT-1) + Cost]).
+
+levenshtein_cost(S, LengthS, T, LengthT) ->
+    A = lists:nth(LengthS, S),
+    B = lists:nth(LengthT, T),
+    Cost = fun (Same,Same) -> 0;
+               (_,_) -> 1 end,
+    Cost(A,B).
