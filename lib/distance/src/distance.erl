@@ -6,7 +6,8 @@
          hamming/2,
          haversine/2, haversine/3,
          jaccard/2,
-         levenshtein/2 ]).
+         levenshtein/2,
+         max_min/2 ]).
 -define(EARTH_RADIUS_IN_MILES, 3956).
 -define(EARTH_RADIUS_IN_KILOMETERS, 6372.8).
 
@@ -101,3 +102,9 @@ levenshtein_cost(S, LengthS, T, LengthT) ->
     Cost = fun (Same,Same) -> 0;
                (_,_) -> 1 end,
     Cost(A,B).
+
+max_min(U,V) ->
+    max_min_tail(U,V,0, 0).
+max_min_tail([HU|TU],[HV|TV], Max, Min) ->
+    max_min_tail(TU, TV, Max + max(HU, HV), Min + min(HU,HV));
+max_min_tail([], [], Max, Min) -> Min/Max.
