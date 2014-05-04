@@ -7,7 +7,8 @@
          haversine/2, haversine/3,
          jaccard/2,
          levenshtein/2,
-         max_min/2 ]).
+         max_min/2,
+         manhatten/2 ]).
 -define(EARTH_RADIUS_IN_MILES, 3956).
 -define(EARTH_RADIUS_IN_KILOMETERS, 6372.8).
 
@@ -108,3 +109,10 @@ max_min(U,V) ->
 max_min_tail([HU|TU],[HV|TV], Max, Min) ->
     max_min_tail(TU, TV, Max + max(HU, HV), Min + min(HU,HV));
 max_min_tail([], [], Max, Min) -> Min/Max.
+
+manhatten(U,V) ->
+    manhatten_tail(U,V,0).
+manhatten_tail([],[],Sum) ->
+    Sum;
+manhatten_tail([A|U],[B|V],Sum) ->
+    manhatten_tail(U,V,Sum + abs(A-B)).
